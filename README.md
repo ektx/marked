@@ -71,6 +71,6 @@ $ cat hello.html
 </html>
 ```
 
-## License
+## 调整
 
-Copyright (c) 2011-2018, Christopher Jeffrey. (MIT License)
+- 调整tabel渲染，以支持更多复杂情况输出  

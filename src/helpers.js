@@ -142,34 +142,56 @@ function merge(obj) {
 }
 
 function splitCells(tableRow, count) {
-  // ensure that every cell-delimiting pipe has a space
-  // before it to distinguish it from an escaped pipe
-  const row = tableRow.replace(/\|/g, (match, offset, str) => {
-      let escaped = false,
-        curr = offset;
-      while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
-      if (escaped) {
-        // odd number of slashes means | is escaped
-        // so we leave it alone
-        return '|';
-      } else {
-        // add space before unescaped |
-        return ' |';
+  console.log('table row:', tableRow)
+  console.log('count:', count)
+  let cells = [];
+  // 记录开始截取位置
+  let start = 0;
+  // 当发现 ` ' " 包含 | 时打开
+  let stacks = [];
+  // 半角开合符号
+  let isOpen = false
+
+  for (let i = 0; i < tableRow.length; i++) {
+    let val = tableRow[i]
+
+    // 当字符串为 | 且堆中没有特殊符号引用时 且 没有半角开合的符号
+    if (val === '|' && !stacks.length && !isOpen) {
+      // 追加内容 从完整的内容是截取内容
+      cells.push( tableRow.slice(start, i).trim() )
+      // 更新起始位置
+      start = ++i
+    } 
+    // 如果字符串是 ' " `
+    else if (['\'', '"', '`'].includes(val)) {
+      // 如果已经有限制分隔时，不进行更细节上的控制
+      if (!isOpen) {
+        // 如果已经存在内容
+        if (stacks.length) {
+          // 判断最后一位是否与当前字符串相同，
+          // 如果是相同则大致认为是符号的闭合
+          if (stacks[stacks.length -1] === val) {
+            // 移除
+            stacks.pop()
+          } else {
+            stacks.push(val)
+          }
+        } else {
+          stacks.push(val)
+        }
       }
-    }),
-    cells = row.split(/ \|/);
-  let i = 0;
-
-  if (cells.length > count) {
-    cells.splice(count);
-  } else {
-    while (cells.length < count) cells.push('');
+    } 
+    else if (['「', '《', '‘', '“', '(', '（', '{'].includes(val)) {
+      isOpen = true
+    } 
+    else if (['」', '》', '’', '”', ')', '）', '}'].includes(val)) {
+      isOpen = false
+    }
   }
 
-  for (; i < cells.length; i++) {
-    // leading or trailing whitespace is ignored per the gfm spec
-    cells[i] = cells[i].trim().replace(/\\\|/g, '|');
-  }
+  // 追加最后的剩余内容
+  cells.push( tableRow.slice(start) )
+
   return cells;
 }
 
