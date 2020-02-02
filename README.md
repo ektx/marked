@@ -18,6 +18,8 @@
 - ⚖️ light-weight while implementing all markdown features from the supported flavors & specifications
 - 🌐 works in a browser, on a server, or from a command line interface (CLI)
 
+[toc]
+
 ## Demo
 
 Checkout the [demo page](https://marked.js.org/demo/) to see marked in action ⛹️
@@ -73,4 +75,6 @@ $ cat hello.html
 
 ## 调整
 
-- 调整tabel渲染，以支持更多复杂情况输出  
+- 调整tabel渲染，以支持更多复杂情况输出   
+- 调整跳转以新页面打开展示
+- TOC 功能

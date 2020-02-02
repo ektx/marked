@@ -371,13 +371,20 @@ module.exports = class Lexer {
 
       // top-level paragraph
       if (top && (cap = this.rules.paragraph.exec(src))) {
+        let type = 'paragraph'
         src = src.substring(cap[0].length);
+
+        if (cap[0] === '[toc]') {
+          type = 'TOC'
+        }
+
         this.tokens.push({
-          type: 'paragraph',
+          type,
           text: cap[1].charAt(cap[1].length - 1) === '\n'
             ? cap[1].slice(0, -1)
             : cap[1]
         });
+
         continue;
       }
 
@@ -396,7 +403,6 @@ module.exports = class Lexer {
         throw new Error('Infinite loop on byte: ' + src.charCodeAt(0));
       }
     }
-
     return this.tokens;
   };
 };

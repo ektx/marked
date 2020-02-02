@@ -1,4 +1,5 @@
 const { defaults } = require('./defaults.js');
+const Slugger = require('./Slugger.js');
 const {
   cleanUrl,
   escape
@@ -45,6 +46,8 @@ module.exports = class Renderer {
   };
 
   heading(text, level, raw, slugger) {
+    // console.log(1110, text, level, raw, slugger.slug(raw))
+
     if (this.options.headerIds) {
       return '<h'
         + level
@@ -136,7 +139,7 @@ module.exports = class Renderer {
     if (href === null) {
       return text;
     }
-    let out = '<a href="' + escape(href) + '"';
+    let out = '<a target="_blank" href="' + escape(href) + '"';
     if (title) {
       out += ' title="' + title + '"';
     }
@@ -161,4 +164,29 @@ module.exports = class Renderer {
   text(text) {
     return text;
   };
+
+  TOC (list) {
+    let out = ''
+    let level = 0
+
+    list.forEach(head => {
+      let slugger = new Slugger()
+      let slug = this.options.headerPrefix + slugger.slug(head.text)
+
+      if (head.depth > level) {
+        out += '<ul class="marked-toc-list">'
+      }
+      if (head.depth < level) {
+        out += '</ul>'
+      }
+
+      out += `<li><a href="#${slug}">${head.text}</a></li>`
+
+      level = head.depth
+    })
+    
+    if (level > 0) out += '</ul>'.repeat(level)
+
+    return out
+  }
 };

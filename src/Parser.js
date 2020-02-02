@@ -15,6 +15,7 @@ module.exports = class Parser {
   constructor(options) {
     this.tokens = [];
     this.token = null;
+    this.allTokens = [];
     this.options = options || defaults;
     this.options.renderer = this.options.renderer || new Renderer();
     this.renderer = this.options.renderer;
@@ -40,6 +41,7 @@ module.exports = class Parser {
       tokens.links,
       merge({}, this.options, { renderer: new TextRenderer() })
     );
+    this.allTokens = tokens.slice();
     this.tokens = tokens.reverse();
 
     let out = '';
@@ -84,6 +86,10 @@ module.exports = class Parser {
   tok() {
     let body = '';
     switch (this.token.type) {
+      case 'TOC': {
+        const headings = this.allTokens.filter(token => token.type === 'heading')
+        return this.renderer.TOC(headings)
+      }
       case 'space': {
         return '';
       }
