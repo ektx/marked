@@ -374,7 +374,7 @@ module.exports = class Lexer {
         let type = 'paragraph'
         src = src.substring(cap[0].length);
 
-        if (cap[0] === '[toc]') {
+        if (/^\[toc\]$/i.test(cap[0])) {
           type = 'TOC'
         }
 
