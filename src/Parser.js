@@ -87,7 +87,13 @@ module.exports = class Parser {
     let body = '';
     switch (this.token.type) {
       case 'TOC': {
-        const headings = this.allTokens.filter(token => token.type === 'heading')
+        const headings = this.allTokens.filter(token => {
+          if (token.type === 'heading') {
+            token.formatText = unescape(this.inlineText.output(token.text))
+            return true
+          }
+          return false
+        })
         return this.renderer.TOC(headings)
       }
       case 'space': {

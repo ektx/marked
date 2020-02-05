@@ -46,8 +46,6 @@ module.exports = class Renderer {
   };
 
   heading(text, level, raw, slugger) {
-    // console.log(1110, text, level, raw, slugger.slug(raw))
-
     if (this.options.headerIds) {
       return '<h'
         + level
@@ -171,7 +169,7 @@ module.exports = class Renderer {
 
     list.forEach(head => {
       let slugger = new Slugger()
-      let slug = this.options.headerPrefix + slugger.slug(head.text)
+      let slug = this.options.headerPrefix + slugger.slug(head.formatText)
 
       if (head.depth > level) {
         out += '<ul class="marked-toc-list">'
@@ -180,7 +178,7 @@ module.exports = class Renderer {
         out += '</ul>'
       }
 
-      out += `<li><a href="#${slug}">${head.text}</a></li>`
+      out += `<li><a href="#${slug}">${head.formatText}</a></li>`
 
       level = head.depth
     })
