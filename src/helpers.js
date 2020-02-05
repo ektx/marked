@@ -142,8 +142,6 @@ function merge(obj) {
 }
 
 function splitCells(tableRow, count) {
-  console.log('table row:', tableRow)
-  console.log('count:', count)
   let cells = [];
   // 记录开始截取位置
   let start = 0;
